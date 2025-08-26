@@ -4,33 +4,47 @@
     {
       name: "3db",
       source: "3sig/3suite-db",
+
       sourceActions: [{ type: "chmod" }],
+
+
+      // uncomment the following lines to use the local build
+      //sourceType: "local",
+      //localPath: "../../3suite/3suite-db",
+
+
       config: {
+        verbose: true,
         plugins: [
             {
-                // update naming for your plugin here
-                name: "template",
-                path: "3db/template.js",
+                name: "websockets",
+                path: "3db/websockets.js",
 
-                // insert configuration for your plugin here
                 config: {
-                    hello: "world"
+                    serverUrl: "localhost:8080",
+                    websocketPrefix: "3db/"
                 }
             }
         ]
       }
     },
     {
-        // update naming for your plugin here
-        name: "template",
+        name: "websocket-server",
+        source: "3sig/3suite-websockets",
+        sourceActions: [{ type: "chmod" }],
+        config: {
+          port: 8080,
+        }
+    },
+    {
+        name: "websockets",
         sourceType: "local",
         localPath: "./build",
         sourceFileType: "pattern-match",
         sourceFilePattern: "main.js",
         sourceExclude: true,
         sourceActions: [
-        // update naming for your plugin here
-          { type: "move", location: "./3db", filename: "template.js" }
+          { type: "move", location: "./3db", filename: "websockets.js" }
         ],
     },
   ]
