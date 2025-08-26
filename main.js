@@ -8,6 +8,7 @@ export {
 }
 
 let ws;
+let retryTimeout;
 
 async function onInitialize(config, runApi) {
   console.log('[websockets] Initializing WebSocket client');
@@ -15,6 +16,10 @@ async function onInitialize(config, runApi) {
     console.log('[websockets] Config:', { serverUrl: config.serverUrl, websocketPrefix: config.websocketPrefix });
   }
 
+  connect(config, runApi);
+}
+
+function connect(config, runApi) {
   const serverUrl = "ws://" + config.serverUrl;
   console.log('[websockets] Connecting to server:', serverUrl);
   
@@ -32,6 +37,7 @@ async function onInitialize(config, runApi) {
     if (config.verbose) {
       console.log("[websockets] Close details - code:", code, "reason:", reason?.toString());
     }
+    scheduleReconnect(config, runApi);
   });
 
   ws.on("error", (error) => {
@@ -39,6 +45,7 @@ async function onInitialize(config, runApi) {
     if (config.verbose) {
       console.error("[websockets] Full connection error:", error);
     }
+    scheduleReconnect(config, runApi);
   });
 
   ws.on("message", async (data) => {
@@ -102,6 +109,16 @@ async function onInitialize(config, runApi) {
       }
     }
   });
+}
+
+function scheduleReconnect(config, runApi) {
+  if (retryTimeout) return;
+  
+  console.log("[websockets] Scheduling reconnect in 3 seconds...");
+  retryTimeout = setTimeout(() => {
+    retryTimeout = null;
+    connect(config, runApi);
+  }, 3000);
 }
 
 async function emitUpdate(config, runApi, id, data) {

@@ -1,5 +1,6 @@
 {
   devDependenciesLocation: "orchestrator-deps",
+  verbose: true,
   processes: [
     {
       name: "3db",

@@ -19,7 +19,7 @@ jobs:
       - uses: oven-sh/setup-bun@v2
       - run: bun install
       - name: Build
-        run: bun build main.js --target node --outdir . --entry-naming [dir]/${{ github.event.repository.name }}_${{ env.COMMIT_SHORT_SHA }}.js
+        run: bun build main.js --target bun --outdir . --entry-naming [dir]/${{ github.event.repository.name }}_${{ env.COMMIT_SHORT_SHA }}.js
       - name: Upload build
         uses: actions/upload-artifact@v4
         with:
